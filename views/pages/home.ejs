@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <%- include('../partials/header') %>
+    <main class="container">
+        <% if (user) { %>
+        <div style="margin-bottom: 20px;">
+            <% if (user.role === 'patron') { %>
+                <a href="/dashboard/patron" style="text-decoration: none; color: #333; font-weight: bold;">← Înapoi la Panoul Meu</a>
+            <% } else if (user.role === 'librarian' || user.role === 'admin') { %>
+                <a href="/dashboard/librarian" style="text-decoration: none; color: #333; font-weight: bold;">← Înapoi la Panou Librarian</a>
+            <% } %>
+        </div>
+        <% } %>
+        <h1>Bine ai venit la Biblioteca Digitală!</h1>
+        <p>Explorează colecția noastră de cărți:</p>
+
+        <!-- Lista de cărți -->
+        <% if (books && books.length > 0) { %>
+            <div class="books-grid">
+                <% books.forEach(book => { %>
+                    <div class="book-card">
+                        <h3><%= book.title %></h3>
+                        <p><strong>Autori:</strong> <%= book.authors || 'Necunoscut' %></p>
+                        <p><strong>Editura:</strong> <%= book.publisher %></p>
+                        <p><strong>Cod:</strong> <%= book.unique_number %></p>
+                        <p><strong>Sucursală:</strong> <%= book.branch_name %></p>
+                        <p><strong>Status:</strong> 
+                            <span class="status-<%= book.status %>">
+                                <%= book.status === 'available' ? 'Disponibilă' : 'Împrumutată' %>
+                            </span>
+                        </p>
+                        <% if (user && book.status === 'available') { %>
+                            <form action="/books/borrow" method="POST" style="margin-top: 10px;">
+                                <input type="hidden" name="copy_id" value="<%= book.copy_id %>">
+                                <button type="submit">Împrumută</button>
+                            </form>
+                        <% } %>
+                    </div>
+                <% }) %>
+            </div>
+        <% } else { %>
+            <p>Nu există cărți în bibliotecă momentan.</p>
+        <% } %>
+    </main>
+    <%- include('../partials/footer') %>
+</body>
+</html>

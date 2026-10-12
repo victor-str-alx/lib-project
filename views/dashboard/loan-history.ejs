@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <%- include('../partials/header') %>
+    <main class="container">
+
+        <div style="margin-top: 20px;">
+            <a href="/dashboard/patron">← Înapoi la panoul principal</a>
+        </div>
+
+        <h1>Istoricul meu de împrumuturi</h1>
+        
+        <!-- Mesaj de succes pentru returnare -->
+        <% if (typeof message !== 'undefined') { %>
+            <div style="color: green; padding: 10px; background: #e0ffe0; border: 1px solid green; margin-bottom: 15px;">
+                <%= message %>
+            </div>
+        <% } %>
+
+        <p>Bună, <strong><%= user.name %></strong>! Aici poți vedea toate cărțile pe care le-ai împrumutat.</p>
+
+        <% if (loans && loans.length > 0) { %>
+            <table class="loans-table">
+                <thead>
+                    <tr>
+                        <th>Titlu carte</th>
+                        <th>Autor</th>
+                        <th>Editura</th>
+                        <th>Data împrumutului</th>
+                        <th>Data returnării</th>
+                        <th>Data scadentă</th>
+                        <th>Stare</th>
+                        <th>Acțiuni</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% loans.forEach(loan => { %>
+                        <tr>
+                            <td><%= loan.title %></td>
+                            <td><%= loan.author || 'Necunoscut' %></td>
+                            <td><%= loan.publisher %></td>
+                            <td><%= new Date(loan.borrow_date).toLocaleDateString('ro-RO') %></td>
+                            <td>
+                                <% if (loan.return_date) { %>
+                                    <%= new Date(loan.return_date).toLocaleDateString('ro-RO') %>
+                                <% } else { %>
+                                    <em>Încă nu a fost returnată</em>
+                                <% } %>
+                            </td>
+                            <td>
+                                <%= new Date(loan.due_date).toLocaleDateString('ro-RO') %>
+                                <% if (!loan.return_date && new Date(loan.due_date) < new Date()) { %>
+                                    <span style="color: red;">(Întârziat!)</span>
+                                <% } %>
+                            </td>
+                            <td>
+                                <% if (loan.return_date) { %>
+                                    <span style="color: green;">Returnată</span>
+                                <% } else if (new Date(loan.due_date) < new Date()) { %>
+                                    <span style="color: red;">Întârziat</span>
+                                <% } else { %>
+                                    <span style="color: orange;">Împrumutată</span>
+                                <% } %>
+                            </td>
+                            <td>
+                                <% if (!loan.return_date) { %>
+                                    <form action="/books/return" method="POST" style="margin: 0;">
+                                        <input type="hidden" name="loan_id" value="<%= loan.loan_id %>">
+                                        <button type="submit" style="padding: 5px 10px; font-size: 12px;">Returnează</button>
+                                    </form>
+                                <% } else { %>
+                                    <em>Returnată</em>
+                                <% } %>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        <% } else { %>
+            <p>Nu ai împrumutat nicio carte încă.</p>
+        <% } %>
+    </main>
+    <%- include('../partials/footer') %>
+</body>
+</html>
