@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <%- include('../partials/header') %>
+    <main class="container">
+        <div style="margin-bottom: 20px;">
+            <a href="/dashboard/librarian" style="text-decoration: none; color: #333; font-weight: bold;">← Înapoi la panoul librarian</a>
+        </div>
+
+        <h1>Rapoarte Biblioteca</h1>
+        
+        <!-- Statistici generale -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Cărți</h3>
+                <p class="stat-number"><%= stats.total_books %></p>
+            </div>
+            <div class="stat-card">
+                <h3>Total Cititori</h3>
+                <p class="stat-number"><%= stats.total_patrons %></p>
+            </div>
+            <div class="stat-card">
+                <h3>Împrumuturi Active</h3>
+                <p class="stat-number"><%= stats.active_loans %></p>
+            </div>
+            <div class="stat-card">
+                <h3>Împrumuturi Restante</h3>
+                <p class="stat-number" style="color: red;"><%= stats.overdue_loans %></p>
+            </div>
+            <div class="stat-card">
+                <h3>Sucursale</h3>
+                <p class="stat-number"><%= stats.total_branches %></p>
+            </div>
+        </div>
+
+        <!-- Raport cărți restante -->
+        <h2>Cărți Restante (Întârziate)</h2>
+        <% if (overdueLoans && overdueLoans.length > 0) { %>
+            <table class="loans-table">
+                <thead>
+                    <tr>
+                        <th>Titlu carte</th>
+                        <th>Autor</th>
+                        <th>Împrumutat de</th>
+                        <th>Număr carte</th>
+                        <th>Data scadentă</th>
+                        <th>Zile întârziere</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% overdueLoans.forEach(loan => { %>
+                        <tr>
+                            <td><%= loan.title %></td>
+                            <td><%= loan.author || 'Necunoscut' %></td>
+                            <td><%= loan.borrower_name %></td>
+                            <td><%= loan.card_number %></td>
+                            <td><%= new Date(loan.due_date).toLocaleDateString('ro-RO') %></td>
+                            <td style="color: red; font-weight: bold;"><%= loan.days_overdue %> zile</td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        <% } else { %>
+            <p>Nu există cărți restante momentan. 👍</p>
+        <% } %>
+
+        <!-- Raport cărți împrumutate curent -->
+        <h2>Toate Împrumuturile Active</h2>
+        <% if (currentLoans && currentLoans.length > 0) { %>
+            <table class="loans-table">
+                <thead>
+                    <tr>
+                        <th>Titlu carte</th>
+                        <th>Autor</th>
+                        <th>Împrumutat de</th>
+                        <th>Data împrumut</th>
+                        <th>Data scadentă</th>
+                        <th>Stare</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% currentLoans.forEach(loan => { %>
+                        <tr>
+                            <td><%= loan.title %></td>
+                            <td><%= loan.author || 'Necunoscut' %></td>
+                            <td><%= loan.borrower_name %></td>
+                            <td><%= new Date(loan.borrow_date).toLocaleDateString('ro-RO') %></td>
+                            <td>
+                                <%= new Date(loan.due_date).toLocaleDateString('ro-RO') %>
+                                <% if (loan.days_overdue > 0) { %>
+                                    <span style="color: red;">(Întârziat <%= loan.days_overdue %> zile)</span>
+                                <% } %>
+                            </td>
+                            <td>
+                                <% if (loan.days_overdue > 0) { %>
+                                    <span style="color: red;">Restantă</span>
+                                <% } else { %>
+                                    <span style="color: green;">Activ</span>
+                                <% } %>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        <% } else { %>
+            <p>Nu există împrumuturi active momentan.</p>
+        <% } %>
+    </main>
+    <%- include('../partials/footer') %>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panou Librarian</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <%- include('../partials/header') %>
+        <h1>Panou de Control - Librarian</h1>
+        <p>Bună, <strong><%= user.name %></strong>! Acest panou este destinat bibliotecarilor și administratorilor.</p>
+        
+        <h2>Acțiuni Rapide:</h2>
+        <ul>
+            <li><a href="/">Gestionează cărțile</a></li>
+            <li><a href="/reports">Rapoarte</a></li> <!-- LINK NOU -->
+            <li><a href="/manage-users">Gestionează utilizatori</a></li>
+        </ul>
+    </main>
+    <%- include('../partials/footer') %>
+</body>
+</html>

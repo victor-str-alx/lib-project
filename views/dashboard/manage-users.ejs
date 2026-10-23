@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <%- include('../partials/header') %>
+    <main class="container">
+        <div style="margin-bottom: 20px;">
+            <a href="/dashboard/librarian" style="text-decoration: none; color: #333; font-weight: bold;">← Înapoi la panoul librarian</a>
+        </div>
+
+        <h1>Gestionare Utilizatori</h1>
+        
+        <table class="loans-table">
+            <thead>
+                <tr>
+                    <th>Nr. Carte</th>
+                    <th>Nume</th>
+                    <th>Email</th>
+                    <th>Telefon</th>
+                    <th>Rol</th>
+                    <th>Status</th>
+                    <th>Data înregistrare</th>
+                    <th>Acțiuni</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% users.forEach(user => { %>
+                    <tr>
+                        <td><%= user.card_number %></td>
+                        <td><%= user.name %></td>
+                        <td><%= user.email %></td>
+                        <td><%= user.phone || '-' %></td>
+                        <td><%= user.role %></td>
+                        <td>
+                            <% if (user.is_blacklisted) { %>
+                                <span style="color: red;">Blocat</span>
+                            <% } else { %>
+                                <span style="color: green;">Activ</span>
+                            <% } %>
+                        </td>
+                        <td><%= new Date(user.created_at).toLocaleDateString('ro-RO') %></td>
+                        <td>
+                            <% if (user.is_blacklisted) { %>
+                                <form action="/admin/unblock-user" method="POST" style="display: inline;">
+                                    <input type="hidden" name="user_id" value="<%= user.id %>">
+                                    <button type="submit" style="padding: 3px 8px; font-size: 12px;">Deblochează</button>
+                                </form>
+                            <% } else { %>
+                                <form action="/admin/block-user" method="POST" style="display: inline;">
+                                    <input type="hidden" name="user_id" value="<%= user.id %>">
+                                    <button type="submit" style="padding: 3px 8px; font-size: 12px; background: #ff4444;">Blochează</button>
+                                </form>
+                            <% } %>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </main>
+    <%- include('../partials/footer') %>
+</body>
+</html>

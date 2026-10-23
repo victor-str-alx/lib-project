@@ -1,0 +1,14 @@
+<header>
+    <nav>
+        <a href="/">Acasă</a>
+        <% if (!user) { %>
+            <!-- Dacă utilizatorul NU este logat -->
+            <a href="/auth/login">Login</a>
+            <a href="/auth/register">Înregistrare</a>
+        <% } else { %>
+            <!-- Dacă utilizatorul ESTE logat -->
+            <span>Bună, <%= user.name %></span>
+            <a href="/auth/logout">Logout</a>
+        <% } %>
+    </nav>
+</header>

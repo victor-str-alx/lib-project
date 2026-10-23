@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <%- include('../partials/header') %>
+    <main class="container">
+        <h1>Înregistrare Cont Nou</h1>
+        <form action="/auth/register" method="POST">
+            <div>
+                <label for="card_number">Număr Fisa:</label>
+                <input type="text" id="card_number" name="card_number" required>
+            </div>
+            <div>
+                <label for="name">Nume Complet:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div>
+                <label for="password">Parola:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div>
+                <label for="address">Adresa:</label>
+                <textarea id="address" name="address"></textarea>
+            </div>
+            <div>
+                <label for="phone">Telefon:</label>
+                <input type="text" id="phone" name="phone">
+            </div>
+            <button type="submit">Înregistrează-te</button>
+        </form>
+    </main>
+    <%- include('../partials/footer') %>
+</body>
+</html>
